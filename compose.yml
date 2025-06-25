@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  todo_postgres:
+    build:
+      context: infra/postgres
+      dockerfile: Dockerfile
+    container_name: todo_postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5434:5432'
+    networks:
+      - todo_network
+
+networks:
+  todo_network: {}
