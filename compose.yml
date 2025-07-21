@@ -1,17 +1,30 @@
 version: '3.8'
 
 services:
-  todo_postgres:
+  # todo_postgres:
+  #   build:
+  #     context: infra/postgres
+  #     dockerfile: Dockerfile
+  #   container_name: todo_postgres
+  #   environment:
+  #     POSTGRES_DB: postgres
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   ports:
+  #     - '5434:5432'
+  #   networks:
+  #     - todo_network
+
+  mongo:
     build:
-      context: infra/postgres
+      context: infra/mongo
       dockerfile: Dockerfile
-    container_name: todo_postgres
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+    container_name: todo_mongo
     ports:
-      - '5434:5432'
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
     networks:
       - todo_network
 
