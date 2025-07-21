@@ -6,6 +6,7 @@ import { TodosModule } from './todos/todos.module';
 import { BoxalinoAdminMixerModule } from './boxalino-admin-mixer/boxalino-admin-mixer.module';
 import { RequestLoggingMiddleware } from './logging/request.logging.middleware';
 import { MongooseModule } from '@nestjs/mongoose';
+import { BoxalinoAdminAudiencesModule } from './boxalino-admin-audiences/boxalino-admin-audiences.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     PrismaModule,
     TodosModule,
     BoxalinoAdminMixerModule,
+    BoxalinoAdminAudiencesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
