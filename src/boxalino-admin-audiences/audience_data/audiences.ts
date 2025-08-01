@@ -12,6 +12,19 @@ export default {
           logical_operator: 'AND',
           rules: [
             {
+              type: 'category_order_count_last_x_days_v1',
+              operator: 'less than',
+              value: '{\"category\":\"category x\",\"days\":\"4444\"}',
+              field: 'order',
+              weight: 0.78,
+              comment: 'testing',
+            },
+          ],
+        },
+        {
+          logical_operator: 'AND',
+          rules: [
+            {
               type: 'category',
               operator: 'equals',
               value: 'adsf',
@@ -64,7 +77,7 @@ export default {
             {
               type: 'last_order_date_v1',
               operator: 'greater than',
-              value: 'default',
+              value: '2025-07-15',
               field: 'order',
               weight: 1,
               comment: 'test',
@@ -112,9 +125,9 @@ export default {
           logical_operator: 'AND',
           rules: [
             {
-              type: 'last_login_date_v1',
+              type: 'brand_order_count_last_x_days_v1',
               operator: 'less than',
-              value: 'default',
+              value: '{"brand":"brand","days":"999"}',
               field: 'account',
               weight: 1,
               comment: '',

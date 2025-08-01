@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { BoxalinoAdminAudiencesService } from './boxalino-admin-audiences.service';
 
 @Controller('boxalino-admin-audiences')
@@ -12,33 +12,48 @@ export class BoxalinoAdminAudiencesController {
     return this.boxalinoAdminAudiencesService.seed();
   }
 
-  @Get('audiences')
-  async pages() {
+  @Get('audiences/audiences')
+  async audiences() {
     return this.boxalinoAdminAudiencesService.audiences();
   }
 
-  @Get('filter-types')
-  async narratives() {
-    return this.boxalinoAdminAudiencesService.filterTypes();
+  @Get('audiences/audiences/:id')
+  async getAudience(@Param('id') id: string) {
+    return this.boxalinoAdminAudiencesService.findAudience(id);
   }
 
-  @Get('stats')
-  async widgets() {
-    return this.boxalinoAdminAudiencesService.stats();
+  @Get('audiences/stats')
+  async getAudienceStats() {
+    return this.boxalinoAdminAudiencesService.audienceStats();
   }
 
-  //   @Get('use-cases')
-  //   async useCases() {
-  //     return this.boxalinoAdminAudiencesService.useCases();
-  //   }
+  @Get('audiences/temp-stats/:id')
+  async getAudienceStatsById(@Param('id') id: string) {
+    return this.boxalinoAdminAudiencesService.getAudienceStatsById(id);
+  }
 
-  //   @Get('widget-use-cases')
-  //   async widgetUseCases() {
-  //     return this.boxalinoAdminAudiencesService.widgetUseCases();
-  //   }
+  @Get('collections/collections')
+  async collections() {
+    return this.boxalinoAdminAudiencesService.collections();
+  }
 
-  //   @Get('segments')
-  //   async segments() {
-  //     return this.boxalinoAdminAudiencesService.segments();
-  //   }
+  @Get('collections/collections/:id')
+  async getCollection(@Param('id') id: string) {
+    return this.boxalinoAdminAudiencesService.findCollection(id);
+  }
+
+  @Get('collections/temp-stats/:id')
+  async getCollectionStatsById(@Param('id') id: string) {
+    return this.boxalinoAdminAudiencesService.getCollectionStatsById(id);
+  }
+
+  @Get('audiences/filter-types')
+  async audienceFilterTypes() {
+    return this.boxalinoAdminAudiencesService.audienceFilterTypes();
+  }
+
+  @Get('collections/filter-types')
+  async collectionFilterTypes() {
+    return this.boxalinoAdminAudiencesService.collectionFilterTypes();
+  }
 }
