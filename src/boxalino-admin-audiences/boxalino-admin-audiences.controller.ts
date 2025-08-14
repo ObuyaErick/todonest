@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { BoxalinoAdminAudiencesService } from './boxalino-admin-audiences.service';
 
-@Controller('boxalino-admin-audiences')
+@Controller('winp/data/v1/admin')
 export class BoxalinoAdminAudiencesController {
   constructor(
     private readonly boxalinoAdminAudiencesService: BoxalinoAdminAudiencesService,
