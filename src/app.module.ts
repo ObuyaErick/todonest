@@ -7,6 +7,7 @@ import { BoxalinoAdminMixerModule } from './boxalino-admin-mixer/boxalino-admin-
 import { RequestLoggingMiddleware } from './logging/request.logging.middleware';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BoxalinoAdminAudiencesModule } from './boxalino-admin-audiences/boxalino-admin-audiences.module';
+import { BoxalinoAdminTokenController } from './boxalino-admin-token/boxalino-admin-token.controller';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { BoxalinoAdminAudiencesModule } from './boxalino-admin-audiences/boxalin
     BoxalinoAdminMixerModule,
     BoxalinoAdminAudiencesModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, BoxalinoAdminTokenController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {

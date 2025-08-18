@@ -7,16 +7,6 @@ export class BoxalinoAdminAudiencesController {
     private readonly boxalinoAdminAudiencesService: BoxalinoAdminAudiencesService,
   ) {}
 
-  @Get('/winp/token/admin/winp-audiences/audiences/:token')
-  async user() {
-    return {
-      account: 'mobile_universe_api',
-      project: 'win-p-mobileuniverse',
-      email: 'erick@reduzer.tech',
-      profile: [] as any[],
-    };
-  }
-
   @Get('seed')
   async seed() {
     return this.boxalinoAdminAudiencesService.seed();
