@@ -97,3 +97,113 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## PROBLEM
+
+Consider this request for statistics.
+
+```bash
+curl 'https://admin-test.bx-cloud.com/winp/data/v2/admin/audiences/temp-stats' \
+  -H 'Accept: application/json' \
+  -H 'Accept-Language: en-US,en;q=0.9' \
+  -H 'Connection: keep-alive' \
+  -H 'Content-Type: application/json; charset=utf-8' \
+  -H 'Origin: http://0.0.0.0:9000' \
+  -H 'Referer: http://0.0.0.0:9000/' \
+  -H 'Sec-Fetch-Dest: empty' \
+  -H 'Sec-Fetch-Mode: cors' \
+  -H 'Sec-Fetch-Site: cross-site' \
+  -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36' \
+  -H 'X-Winp-Token: <token>' \
+  -H 'sec-ch-ua: "Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Linux"' \
+  --data-raw '[{"audience_id":"3e32677f-85c8-19a5-72a6-f98ea990e062","name":"collection audience Aug 11","description":"A test collection audience","rule_groups":[{"rules":[{"type":"093877fd-4a8e-fbe7-c9f2-b1a61649f377","operator":"affinity_over","value":"wishlist","field":"collection_093877fd-4a8e-fbe7-c9f2-b1a61649f377","weight":0.6,"comment":"comment here"},{"type":"singlebrand_buyer_v1","operator":"is true","value":"true","field":"order","weight":0.42,"comment":"purchased 3 times"},{"type":"category_order_count_last_x_days_v1","operator":"greater than","value":"{\"category\":\"category-C\",\"days\":\"56\"}","field":"order","weight":1,"comment":""}],"logical_operator":"OR"},{"rules":[{"type":"first_order_date_v1","operator":"greater than","value":"2025-08-21","field":"order","weight":1,"comment":""}],"logical_operator":"AND"}],"logical_operator":"OR","created_at":"2025-08-11T09:41:44.866Z","updated_at":"2025-08-18T13:36:13.310Z","is_deleted":false,"parent_audience_id":null,"group_name":null,"priority":null,"last_action_by":null}]'
+```
+
+The third rule of filter type `category_order_count_last_x_days_v1` in the `first` rule group's rules has a json structure for the rule's `value` property that is corresponding to the filter type's `value_type` i.e:
+
+```json
+{
+  "accounts": [],
+  "type_id": "category_order_count_last_x_days_v1",
+  "type": "order",
+  "display_name": "Orders from Category in Last x Days",
+  "description": "Enter days; counts orders from the category within that period (format: \"CATEGORY,DAYS\")",
+  "value_type": "[{\"type\":\"string\",\"label\":\"category\",\"description\":\"Category identifier\"},{\"type\":\"number\",\"label\":\"days\",\"description\":\"Number of days\"}]",
+  "allowed_operators": [
+    "less than",
+    "greater than",
+    "less than or equal to",
+    "greater than or equal to"
+  ],
+  "possible_values": [],
+  "is_required": false,
+  "created_at": "2025-05-22 14:08:18.683932+00:00",
+  "updated_at": "2025-05-22 14:08:18.683932+00:00",
+  "is_deleted": false
+}
+```
+
+The new approach I gave it was to instead of storing a comma delimited list of values (for the json value types defined by corresponding `FilterTypes`) in the same `value` property of a `Rule`, am storing a json string instead with keys identical to `label`'s values. i.e  
+given the above `Filter Type` the value property of a `Rule` of this type becomes:
+
+```json
+{
+  "type": "category_order_count_last_x_days_v1",
+  "operator": "greater than",
+  "value": "{\"category\":\"category-C\",\"days\":\"56\"}",
+  "field": "order",
+  "weight": 1,
+  "comment": ""
+}
+```
+
+I feel this is a better way storing the values in a `stringified map` instead of `a comma delimited list of values`.
+
+## CHALLENGE
+
+The challenge am facing now is with fetching the statistics as it does not seem to recognize this format depicted by this response:
+
+```json
+{
+  "success": true,
+  "status": "SUCCESS",
+  "code": 200,
+  "payload": [
+    {
+      "error": "An internal error occurred: Invalid JSON in audience_param when use_temp_audience=True: Expecting ',' delimiter: line 1 column 561 (char 560)"
+    }
+  ],
+  "tm": "20250820053724",
+  "errors": []
+}
+```
+
+## OBSERVATIONS
+
+- Fetching any audience statistics that does not include a rule with such complex values is a success considering the `value` properties are plain strings.
+- Resending the failing request with the `culprit rule`'s value transformed to a comma delimited list is also a success: i.e `"value":"category-C,56"`
+
+```bash
+curl 'https://admin-test.bx-cloud.com/winp/data/v2/admin/audiences/temp-stats' \
+  -H 'Accept: application/json' \
+  -H 'Accept-Language: en-US,en;q=0.9' \
+  -H 'Connection: keep-alive' \
+  -H 'Content-Type: application/json; charset=utf-8' \
+  -H 'Origin: http://0.0.0.0:9000' \
+  -H 'Referer: http://0.0.0.0:9000/' \
+  -H 'Sec-Fetch-Dest: empty' \
+  -H 'Sec-Fetch-Mode: cors' \
+  -H 'Sec-Fetch-Site: cross-site' \
+  -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36' \
+  -H 'X-Winp-Token: <token>' \
+  -H 'sec-ch-ua: "Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Linux"' \
+  --data-raw '[{"audience_id":"3e32677f-85c8-19a5-72a6-f98ea990e062","name":"collection audience Aug 11","description":"A test collection audience","rule_groups":[{"rules":[{"type":"093877fd-4a8e-fbe7-c9f2-b1a61649f377","operator":"affinity_over","value":"wishlist","field":"collection_093877fd-4a8e-fbe7-c9f2-b1a61649f377","weight":0.6,"comment":"comment here"},{"type":"singlebrand_buyer_v1","operator":"is true","value":"true","field":"order","weight":0.42,"comment":"purchased 3 times"},{"type":"category_order_count_last_x_days_v1","operator":"greater than","value":"category-C,56","field":"order","weight":1,"comment":""}],"logical_operator":"OR"},{"rules":[{"type":"first_order_date_v1","operator":"greater than","value":"2025-08-21","field":"order","weight":1,"comment":""}],"logical_operator":"AND"}],"logical_operator":"OR","created_at":"2025-08-11T09:41:44.866Z","updated_at":"2025-08-18T13:36:13.310Z","is_deleted":false,"parent_audience_id":null,"group_name":null,"priority":null,"last_action_by":null}]'
+```
+
+## REQUEST
+
+The approach I gave the json values gives me a flexible way of transforming the values consistently, it only fails when fetching statistics. I dont know how flexible this can be adjusted to adapt my approach (that is from a comma delimited list to a json string) so that fetching statistics do not fail.

@@ -19,6 +19,22 @@ export default {
               weight: 0.78,
               comment: 'testing',
             },
+            {
+              type: 'zip_code_v1',
+              operator: 'less than',
+              value: '15',
+              field: 'demographic',
+              weight: 1,
+              comment: 'good to go',
+            },
+            {
+              type: 'last_order_date_v1',
+              operator: 'greater than',
+              value: '2025-07-15',
+              field: 'order',
+              weight: 1,
+              comment: 'test',
+            },
           ],
         },
         {
