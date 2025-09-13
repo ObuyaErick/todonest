@@ -12,7 +12,7 @@ import {
 import { BoxalinoAdminMixerService } from './boxalino-admin-mixer.service';
 import { actionStack } from './payloads/history';
 
-@Controller('winp/data/v1/admin')
+@Controller('winp/data/v1/admin/mixer/')
 export class BoxalinoAdminMixerController {
   constructor(
     private readonly boxalinoAdminMixerService: BoxalinoAdminMixerService,

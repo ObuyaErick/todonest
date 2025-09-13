@@ -49,8 +49,8 @@ export class BoxalinoAdminMixerService {
       payload: records.map((doc) => {
         const { _id, __v, ...rest } = doc.toObject();
         return {
-          widget_use_case: _id,
           ...rest,
+          widget_use_case: _id,
         };
       }),
       tm: '20250502155901',
@@ -105,7 +105,7 @@ export class BoxalinoAdminMixerService {
       success: true,
       status: 'SUCCESS',
       code: 200,
-      payload: [{ widget_use_case: updated._id, ...updated }],
+      payload: [{ ...updated, widget_use_case: updated._id }],
       tm: '20250502155901',
       errors: [],
     };
@@ -119,7 +119,7 @@ export class BoxalinoAdminMixerService {
       success: true,
       status: 'SUCCESS',
       code: 200,
-      payload: [{ widget_use_case: _id, ...rest }],
+      payload: [{ ...rest, widget_use_case: _id }],
       tm: '20250502155901',
       errors: [],
     };

@@ -55,8 +55,8 @@ export class ABTest {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ type: [String], default: [] })
-  property_names: string[];
+  @Prop({ type: String, required: true })
+  target_id: string;
 }
 
 export class Position {
@@ -88,6 +88,8 @@ export class AdvancedOptions {
 
 @Schema()
 export class WidgetUseCase {
+  widget_use_case: string | null;
+
   @Prop({ required: true })
   use_case_id: string;
 
@@ -124,14 +126,14 @@ export class WidgetUseCase {
   @Prop({ type: [String], default: [] })
   localized_datetime_attributes: string[];
 
-  @Prop()
-  creation_tm: string;
+  @Prop({ type: String, default: null })
+  creation_tm: string | null;
 
-  @Prop()
-  last_update_tm: string;
+  @Prop({ type: String, default: null })
+  last_update_tm: string | null;
 
-  @Prop()
-  last_update_user: string;
+  @Prop({ type: String, default: null })
+  last_update_user: string | null;
 
   @Prop({ type: String, default: null })
   category: string | null;
