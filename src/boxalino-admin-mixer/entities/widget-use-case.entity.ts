@@ -141,8 +141,8 @@ export class WidgetUseCase {
   @Prop({ type: Boolean, default: null })
   active: boolean | null;
 
-  @Prop({ type: String, default: null })
-  segment: string | null;
+  @Prop({ type: Array<String>, default: [] as string[] })
+  segments: string[] | null;
 
   @Prop({ type: AdvancedOptions, default: null })
   advanced_options: AdvancedOptions | null;
